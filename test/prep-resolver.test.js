@@ -5,6 +5,31 @@ const {
 const { anyValue } = require("@nomicfoundation/hardhat-chai-matchers/withArgs");
 const { expect } = require("chai");
 
+const EAS_OP_SEPOLIA_ADDRESS = "0x4200000000000000000000000000000000000021";
+const SCHEMAREGISTRY_OP_SEPOLIA_ADDRESS = "0x4200000000000000000000000000000000000020";
+
+const { ethers, upgrades } = require("hardhat");
+
+const { SchemaRegistry } = require("@ethereum-attestation-service/eas-sdk");
+
+const schemaRegistryContractAddress = "0xYourSchemaRegistryContractAddress";
+const schemaRegistry = new SchemaRegistry(schemaRegistryContractAddress);
+
+schemaRegistry.connect(signer);
+
+const schema = "uint256 eventId, uint8 voteIndex";
+const resolverAddress = "0x0a7E2Ff54e76B8E6659aedc9103FB21c038050D0"; // Sepolia 0.26
+const revocable = true;
+
+const transaction = await schemaRegistry.register({
+  schema,
+  resolverAddress,
+  revocable,
+});
+
+// Optional: Wait for transaction to be validated
+await transaction.wait();
+
 describe("Lock", function () {
   // We define a fixture to reuse the same setup in every test.
   // We use loadFixture to run this setup once, snapshot that state,
